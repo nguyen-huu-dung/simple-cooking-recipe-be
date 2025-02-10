@@ -6,6 +6,7 @@ import { LoggerError } from '../helpers/logger';
 class AWSService {
 
     constructor() {
+        this.awsUseIamRole = process.env.AWS_USE_IAM_ROLE;
         this.accessKeyId = process.env.AWS_ACCESS_KEY;
         this.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
         this.region = process.env.AWS_REGION;
@@ -13,13 +14,15 @@ class AWSService {
         this.awsCloudfrontUrl = process.env.AWS_CLOUDFRONT_URL;
         this.awsCookingRecipeImage = process.env.AWS_COOKING_RECIPE_IMAGE;
 
-        this.s3 = new AWS.S3({
-            credentials: {
-                accessKeyId: this.accessKeyId,
-                secretAccessKey: this.secretAccessKey
-            },
-            region: this.region
-        });
+        this.s3 = this.awsUseIamRole === 'TRUE' ?
+            new AWS.S3() :
+            new AWS.S3({
+                credentials: {
+                    accessKeyId: this.accessKeyId,
+                    secretAccessKey: this.secretAccessKey
+                },
+                region: this.region
+            });
     }
 
     async asyncPutObject(bucket, key, pathFile) {
