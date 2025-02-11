@@ -93,7 +93,7 @@ class CookingRecipeService extends BaseService {
                 name,
                 slug,
                 introduce,
-                menus,
+                menus: menus || [],
                 type_dish: typeDish || null,
                 make_way: makeWay || null,
                 image: filename ?? null,
@@ -108,7 +108,7 @@ class CookingRecipeService extends BaseService {
             });
 
             // tạo menu mapper
-            if (newCookingRecipe?.id && menus.length > 0) {
+            if (newCookingRecipe?.id && menus?.length > 0) {
                 const menuMappersCreateData = menus.map((menuId) => ({
                     cooking_recipe_id: newCookingRecipe.id,
                     menu_id: menuId
@@ -443,6 +443,8 @@ class CookingRecipeService extends BaseService {
             if (!existedCookingRecipe) return this.result(false, 400, this.messages.COOKING_RECIPE_NOT_EXISTED);
 
             // kiểm tra giá trị menus
+            let removeMenus;
+            const existedCookingRecipeMenus = existedCookingRecipe.cooking_recipe_menus?.length > 0 ? existedCookingRecipe.cooking_recipe_menus.map((e) => e.id) : [];
             if (menus?.length > 0) {
                 const existedMenus = await this.cookingRecipeMenuRepository.findAll({
                     id: {
@@ -455,9 +457,8 @@ class CookingRecipeService extends BaseService {
                 }
 
                 // Xác định menu cần thêm và menu cần xóa
-                const existedCookingRecipeMenus = existedCookingRecipe.cooking_recipe_menus?.length > 0 ? existedCookingRecipe.cooking_recipe_menus.map((e) => e.id) : [];
                 const newMenus = menus.filter((id) => !existedCookingRecipeMenus.includes(id));
-                const removeMenus = existedCookingRecipeMenus.filter((id) => !menus.includes(id));
+                removeMenus = existedCookingRecipeMenus.filter((id) => !menus.includes(id));
 
                 // tạo menu mới
                 if (newMenus.length > 0) {
@@ -470,18 +471,20 @@ class CookingRecipeService extends BaseService {
                         transaction
                     });
                 }
+            } else {
+                removeMenus = existedCookingRecipeMenus;
+            }
 
-                // xóa menu cũ
-                if (removeMenus?.length > 0) {
-                    await this.cookingRecipeMenuMapperRepository.delete({
-                        cooking_recipe_id: existedCookingRecipe.id,
-                        menu_id: {
-                            [Op.in]: removeMenus
-                        }
-                    }, {
-                        transaction
-                    });
-                }
+            // xóa menu cũ
+            if (removeMenus?.length > 0) {
+                await this.cookingRecipeMenuMapperRepository.delete({
+                    cooking_recipe_id: existedCookingRecipe.id,
+                    menu_id: {
+                        [Op.in]: removeMenus
+                    }
+                }, {
+                    transaction
+                });
             }
 
             // kiểm tra giá trị typeDish
@@ -530,7 +533,7 @@ class CookingRecipeService extends BaseService {
                 data: {
                     name,
                     introduce,
-                    menus,
+                    menus: menus || [],
                     type_dish: typeDish || null,
                     make_way: makeWay || null,
                     image: filename ?? null,
@@ -621,7 +624,7 @@ class CookingRecipeService extends BaseService {
                             // eslint-disable-next-line @stylistic/js/max-len
                             const cookingRecipe = await axios.get(`https://marketapi.cooky.vn/recipe/v1.3/detail?checksum=${this.helperService.generateUuidAlphabet(this.constants.ALPHABET_GENERATE_UUID.LOW_ALPHABET_NUMBER, 32)}&id=${recipe.Id}`);
 
-                            if (cookingRecipe.data?.data && !cookingRecipesCrawl.find(crawl => crawl.id === cookingRecipe.data.data.id)) {
+                            if (cookingRecipe.data?.data && !cookingRecipesCrawl.find((crawl) => crawl.id === cookingRecipe.data.data.id)) {
                                 cookingRecipesCrawl.push(cookingRecipe.data.data);
                             }
                         }

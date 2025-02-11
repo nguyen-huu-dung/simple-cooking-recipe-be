@@ -11,7 +11,7 @@ class CookingRecipeValidate {
         const schema = joi.object({
             name: joi.string().trim().max(this.constants.MAX_LENGTH_DEFAULT.INPUT).required(),
             introduce: joi.string().trim().max(this.constants.MAX_LENGTH_DEFAULT.TEXTAREA).required(),
-            menus: joi.array().items(joi.number().positive().required()).required(),
+            menus: joi.array().items(joi.number().positive().required()).optional().empty().allow(null),
             typeDish: joi.number().allow('', null),
             makeWay: joi.number().allow('', null),
             ingredients: joi.array().items(joi.string().trim().max(this.constants.MAX_LENGTH_DEFAULT.INPUT).required()).min(1).required(),
@@ -33,7 +33,7 @@ class CookingRecipeValidate {
         const schema = joi.object({
             name: joi.string().trim().max(this.constants.MAX_LENGTH_DEFAULT.INPUT).required(),
             introduce: joi.string().trim().max(this.constants.MAX_LENGTH_DEFAULT.TEXTAREA).required(),
-            menus: joi.array().items(joi.number().positive().required()).required(),
+            menus: joi.array().items(joi.number().positive().required()).optional().empty().allow(null),
             typeDish: joi.number().allow('', null),
             makeWay: joi.number().allow('', null),
             ingredients: joi.array().items(joi.string().trim().max(this.constants.MAX_LENGTH_DEFAULT.INPUT).required()).min(1).required(),
