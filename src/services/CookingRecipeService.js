@@ -621,7 +621,7 @@ class CookingRecipeService extends BaseService {
                             // eslint-disable-next-line @stylistic/js/max-len
                             const cookingRecipe = await axios.get(`https://marketapi.cooky.vn/recipe/v1.3/detail?checksum=${this.helperService.generateUuidAlphabet(this.constants.ALPHABET_GENERATE_UUID.LOW_ALPHABET_NUMBER, 32)}&id=${recipe.Id}`);
 
-                            if (cookingRecipe.data?.data) {
+                            if (cookingRecipe.data?.data && !cookingRecipesCrawl.find(crawl => crawl.id === cookingRecipe.data.data.id)) {
                                 cookingRecipesCrawl.push(cookingRecipe.data.data);
                             }
                         }
