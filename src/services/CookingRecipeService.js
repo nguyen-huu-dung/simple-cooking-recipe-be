@@ -609,10 +609,10 @@ class CookingRecipeService extends BaseService {
                     cookingRecipes = await axios.get(`https://www.cooky.vn/directory/search?q=null&st=2&lv=&cs=&cm=&dt=140&igt=&oc=&p=&crs=2&page=${pageIndex + START_PAGE}&pageSize=12&append=false&video=false`);
                 }
 
-                // lấy món loại 3: thức uống, đồ uống, ép vắt xay
+                // lấy món loại 3: bánh-bánh ngọt, bánh ngọt, quay nướng
                 if (TYPE_CRAWL == '3') {
                     // eslint-disable-next-line @stylistic/js/max-len
-                    cookingRecipes = await axios.get(`https://www.cooky.vn/directory/search?q=null&st=2&lv=&cs=&cm=38&dt=127&igt=&oc=&p=&crs=7&page=${pageIndex + START_PAGE}&pageSize=12&append=true&video=false`);
+                    cookingRecipes = await axios.get(`https://www.cooky.vn/directory/search?q=null&st=2&lv=&cs=&cm=36&dt=114&igt=&oc=&p=&crs=8&page=${pageIndex + START_PAGE}&pageSize=12&append=true&video=false`);
                 }
 
                 if (cookingRecipes.data?.recipes?.length > 0) {
@@ -655,9 +655,9 @@ class CookingRecipeService extends BaseService {
 
                     // loại 3
                     if (TYPE_CRAWL == '3') {
-                        menus = [7]; // thức uống
-                        type_dish = 6; // đồ uống
-                        make_way = 6; // ép vắt xay
+                        menus = [8]; // bánh-bánh ngọt
+                        type_dish = 28; // bánh ngọt
+                        make_way = 4; // quay nướng
                     }
 
                     // xử lý lấy ảnh
