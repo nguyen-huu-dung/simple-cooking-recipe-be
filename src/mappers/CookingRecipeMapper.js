@@ -57,10 +57,10 @@ class CookingRecipeMapper {
             makeWay: this.responseCookingRecipeMakeWay(cookingRecipeMakeWay),
             image: this.awsService.generateFileUrl(this.awsService.awsCookingRecipeImage, image),
             introduce,
-            ingredients: JSON.parse(ingredients),
+            ingredients: typeof ingredients === 'string' ? JSON.parse(ingredients) : ingredients,
             ration,
             totalTime,
-            instructions: JSON.parse(instructions)
+            instructions: typeof instructions === 'string' ? JSON.parse(instructions) : instructions
         };
     }
 
